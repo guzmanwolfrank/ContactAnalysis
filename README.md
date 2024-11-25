@@ -25,8 +25,7 @@ Interactive web dashboard visualizing police-public contact data from the 2022 N
 ```bash
 git clone https://github.com/yourusername/police-contact-dashboard
 cd police-contact-dashboard
-#https://raw.githack.com/guzmanwolfrank/ContactAnalysis/main/contactanalysis.html
-```
+[HTML Dashboard of Project](https://raw.githack.com/guzmanwolfrank/ContactAnalysis/main/contactanalysis.html)```
 
 ## Data Source
 
