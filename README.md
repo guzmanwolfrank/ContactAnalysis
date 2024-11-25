@@ -27,7 +27,7 @@ git clone https://github.com/yourusername/police-contact-dashboard
 cd police-contact-dashboard
 [HTML Dashboard of Project](https://raw.githack.com/guzmanwolfrank/ContactAnalysis/main/contactanalysis.html)
 ```
-
+[HTML Dashboard of Project](https://raw.githack.com/guzmanwolfrank/ContactAnalysis/main/contactanalysis.html)
 ## Data Source
 
 - Bureau of Justice Statistics
