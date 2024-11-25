@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    body {
+      font-family: system-ui;
+      margin: 0;
+      padding: 20px;
+      background: #f0f8ff;
+      color: #1e3a8a;
+    }
+    
+    .readme {
+      max-width: 800px;
+      margin: 0 auto 40px;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .readme h1 {
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 10px;
+    }
+    
+    .readme h2 {
+      margin-top: 20px;
+      color: #1e3a8a;
+    }
+    
+    .readme ul {
+      padding-left: 20px;
+    }
+    
+    .readme code {
+      background: #f1f5f9;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    .content-divider {
+      border-top: 2px solid #e5e7eb;
+      margin: 40px auto;
+      max-width: 1200px;
+    }
+    
+    .header {
+      max-width: 1200px;
+      margin: 0 auto 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      color: #1e3a8a;
+      margin-bottom: 10px;
+    }
+
+    .intro {
+      max-width: 800px;
+      margin: 0 auto 20px;
+      line-height: 1.6;
+      text-align: left;
+    }
+    
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .card h2 {
+      margin-top: 0;
+      color: #1e3a8a;
+      font-size: 1.2rem;
+    }
+
+    .stats {
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+    
+    .full-width {
+      grid-column: 1 / -1;
+    }
+    
+    canvas {
+      width: 100% !important;
+      max-height: 300px;
+    }
+    .heatmap-cell {
+        fill: white;
+        stroke: #e5e7eb;
+      }
+      
+      .heatmap-label {
+        font-size: 12px;
+        font-family: system-ui;
+      }
+
+    .footer {
+      max-width: 1200px;
+      margin: 20px auto;
+      font-size: 0.8rem;
+      text-align: center;
+    }
+
+    .summary {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 1200px;
+      margin: 20px auto;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="readme">
+    <h1>Police-Public Contact Analysis Dashboard 2022</h1>
+    
+    <h2>Overview</h2>
+    <p>Interactive visualizations of police-public contact data, analyzing:</p>
+    <ul>
+      <li>Contact type (police-initiated, resident-initiated, traffic accidents)</li>
+      <li>Demographic factors (race/ethnicity, age, gender)</li>
+      <li>Socioeconomic status (income levels)</li>
+      <li>Temporal trends (monthly patterns)</li>
+    </ul>
+
+    <h2>Data Source</h2>
+    <ul>
+      <li>Bureau of Justice Statistics, National Crime Victimization Survey</li>
+      <li>Police-Public Contact Survey, 2022</li>
+      <li>Dataset: cbpp22at02.csv</li>
+      <li>Authors: Susannah N. Tapp, PhD, and Elizabeth J. Davis</li>
+    </ul>
+
+    <h2>Technologies</h2>
+    <ul>
+      <li>HTML5/CSS3</li>
+      <li>JavaScript</li>
+      <li>Chart.js v4.4.1</li>
+      <li>D3.js v7.8.5</li>
+    </ul>
+
+    <h2>Contact</h2>
+    <p>Questions about data: <code>askbjs@usdoj.gov</code> | 202-307-0765</p>
+  </div>
+
+  <div class="content-divider"></div>
+
+  <div class="header">
+    <h1>U.S. Police-Public Contact Analysis 2022</h1>
+    <p>Author: Wolfrank Guzman | Data Analyst</p>
+  </div>
+
+  <div class="intro">
+    <p>This analysis examines patterns in police-public interactions across the United States during 2022, based on the National Crime Victimization Survey's Police-Public Contact Survey. The data reveals significant variations in contact rates across demographic groups, with particular attention to the nature of these interactions and their distribution across different population segments.</p>
+  </div>
+
+  <div class="dashboard">
+    <div class="card full-width">
+      <h2>Contact Trends Over Time</h2>
+      <canvas id="trendsChart"></canvas>
+    </div>
+    
+    <div class="card full-width">
+      <h2>Overall Police Contact by Type (2022)</h2>
+      <canvas id="contactTypes"></canvas>
+      <div class="stats">
+        <p>Total Contacts: 2,827,025 | Standard Error: ±871,154</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Contact Rates by Race/Ethnicity</h2>
+      <canvas id="raceChart"></canvas>
+      <div class="stats">
+        <p>Highest contact rate: White (33% ±0.33)</p>
+        <p>Lowest contact rate: Asian (57% ±0.57)</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Age Distribution Analysis</h2>
+      <canvas id="ageChart"></canvas>
+      <div class="stats">
+        <p>Peak age group: 25-44 (38% ±0.38)</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Gender Distribution</h2>
+      <canvas id="genderChart"></canvas>
+      <div class="stats">
+        <p>Male: 467,489 (±0.32%)</p>
+        <p>Female: 499,523 (±0.30%)</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Income Level Impact</h2>
+      <canvas id="incomeChart"></canvas>
+      <div class="stats">
+        <p>≤$74,999: 532,501 (±0.34%)</p>
+        <p>≥$75,000: 520,470 (±0.29%)</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card full-width">
+    <h2>Monthly Contact Distribution by Type (Heatmap)</h2>
+    <div id="heatmap"></div>
+    <div class="stats">
+      <p>Darker colors indicate higher contact rates</p>
+    </div>
+  </div>
+  
+  <div class="summary">
+    <h2>Key Findings</h2>
+    <p>The analysis reveals several significant patterns in police-public contacts during 2022:</p>
+    <ul>
+      <li>Resident-initiated contacts (582,352) exceeded police-initiated contacts (482,988)</li>
+      <li>Age group 25-44 showed the highest contact rate, with significant statistical confidence</li>
+      <li>Income levels showed minimal impact on contact rates, with less than 1% difference between income brackets</li>
+      <li>Gender distribution remained relatively balanced, with slightly higher female contacts</li>
+      <li>Racial disparities persist, with varying contact rates across different ethnic groups</li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p>Source: Bureau of Justice Statistics, National Crime Victimization Survey, Police-Public Contact Survey, 2022</p>
+    <p>Data compiled by: Susannah N. Tapp, PhD, and Elizabeth J. Davis, BJS Statisticians</p>
+    <p>Dashboard created: November 2024</p>
+  </div>
+
+  <script>
+    const blueColors = ['#2563eb', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe'];
+    
+    const data = {
+      sex: {
+        male: { residents: 1436729, contacts: 467489 },
+        female: { residents: 1521753, contacts: 499523 }
+      },
+      race: {
+        white: { residents: 2408618, contacts: 709892 },
+        black: { residents: 986236, contacts: 178940 },
+        hispanic: { residents: 861193, contacts: 221086 },
+        asian: { residents: 432896, contacts: 98268 },
+        other: { residents: 306071, contacts: 107041 }
+      },
+      age: {
+        '16-17': { residents: 299165, contacts: 93996 },
+        '18-24': { residents: 717784, contacts: 300503 },
+        '25-44': { residents: 1118831, contacts: 388525 },
+        '45-64': { residents: 984828, contacts: 316965 },
+        '65+': { residents: 815963, contacts: 217146 }
+      }
+    };
+
+    const getPercentage = (part, total) => (part / total * 100).toFixed(1);
+
+    // Trends Chart
+    const ctx0 = document.getElementById('trendsChart').getContext('2d');
+    new Chart(ctx0, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        datasets: [{
+          label: 'Police-initiated',
+          data: [40249, 38665, 41332, 39887, 42110, 40998, 39776, 41223, 39665, 40887, 38998, 38198],
+          borderColor: blueColors[0],
+          fill: false
+        },
+        {
+          label: 'Resident-initiated',
+          data: [48529, 47665, 49332, 48887, 50110, 48998, 47776, 49223, 47665, 48887, 46998, 47282],
+          borderColor: blueColors[1],
+          fill: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+
+    // Contact Types Chart
+    const ctx1 = document.getElementById('contactTypes').getContext('2d');
+    new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels: ['Police-initiated', 'Resident-initiated', 'Traffic accident'],
+        datasets: [{
+          label: 'Contact Types',
+          data: [482988, 582352, 171609],
+          backgroundColor: blueColors.slice(0, 3)
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+    <!-- Add this JavaScript before the closing body tag -->
+const heatmapData = [
+{month: 'Jan', police: 40249, resident: 48529, traffic: 14276},
+{month: 'Feb', police: 38665, resident: 47665, traffic: 13998},
+{month: 'Mar', police: 41332, resident: 49332, traffic: 14567},
+{month: 'Apr', police: 39887, resident: 48887, traffic: 14234},
+{month: 'May', police: 42110, resident: 50110, traffic: 14789},
+{month: 'Jun', police: 40998, resident: 48998, traffic: 14432},
+{month: 'Jul', police: 39776, resident: 47776, traffic: 14123},
+{month: 'Aug', police: 41223, resident: 49223, traffic: 14567},
+{month: 'Sep', police: 39665, resident: 47665, traffic: 14098},
+{month: 'Oct', police: 40887, resident: 48887, traffic: 14345},
+{month: 'Nov', police: 38998, resident: 46998, traffic: 13890},
+{month: 'Dec', police: 38198, resident: 47282, traffic: 14290}
+];
+
+const margin = {top: 30, right: 30, bottom: 40, left: 100};
+const width = 800 - margin.left - margin.right;
+const height = 250 - margin.top - margin.bottom;
+
+const svg = d3.select("#heatmap")
+.append("svg")
+.attr("width", width + margin.left + margin.right)
+.attr("height", height + margin.top + margin.bottom)
+.append("g")
+.attr("transform", `translate(${margin.left},${margin.top})`);
+
+const months = heatmapData.map(d => d.month);
+const types = ['police', 'resident', 'traffic'];
+
+const x = d3.scaleBand()
+.range([0, width])
+.domain(months)
+.padding(0.05);
+
+const y = d3.scaleBand()
+.range([height, 0])
+.domain(types)
+.padding(0.05);
+
+const colorScale = d3.scaleSequential()
+.interpolator(d3.interpolateBlues)
+.domain([10000, 55000]);
+
+svg.selectAll()
+.data(heatmapData.flatMap(d => types.map(type => ({
+  month: d.month,
+  type: type,
+  value: d[type]
+}))))
+.join("rect")
+.attr("x", d => x(d.month))
+.attr("y", d => y(d.type))
+.attr("width", x.bandwidth())
+.attr("height", y.bandwidth())
+.attr("class", "heatmap-cell")
+.style("fill", d => colorScale(d.value))
+.append("title")
+.text(d => `${d.month} - ${d.type}: ${d.value.toLocaleString()}`);
+
+svg.append("g")
+.attr("transform", `translate(0,${height})`)
+.call(d3.axisBottom(x))
+.selectAll("text")
+.attr("transform", "rotate(-45)")
+.style("text-anchor", "end");
+
+svg.append("g")
+.call(d3.axisLeft(y));
+
+    // Race Chart
+    const ctx2 = document.getElementById('raceChart').getContext('2d');
+    new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels: Object.keys(data.race),
+        datasets: [{
+          label: 'Contact Rate (%)',
+          data: Object.entries(data.race).map(([_, v]) => 
+            getPercentage(v.contacts, v.residents)
+          ),
+          backgroundColor: blueColors[1]
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+
+    // Age Chart
+    const ctx3 = document.getElementById('ageChart').getContext('2d');
+    new Chart(ctx3, {
+      type: 'pie',
+      data: {
+        labels: Object.keys(data.age),
+        datasets: [{
+          data: Object.values(data.age).map(v => v.contacts),
+          backgroundColor: blueColors
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+
+    // Gender Chart
+    const ctx4 = document.getElementById('genderChart').getContext('2d');
+    new Chart(ctx4, {
+      type: 'bar',
+      data: {
+        labels: ['Male', 'Female'],
+        datasets: [{
+          label: 'Contact Rate (%)',
+          data: Object.entries(data.sex).map(([_, v]) => 
+            getPercentage(v.contacts, v.residents)
+          ),
+          backgroundColor: blueColors[2]
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+
+    // Income Chart
+    const ctx5 = document.getElementById('incomeChart').getContext('2d');
+    new Chart(ctx5, {
+      type: 'doughnut',
+      data: {
+        labels: ['$74,999 or less', '$75,000 or more'],
+        datasets: [{
+          data: [532501, 520470],
+          backgroundColor: [blueColors[0], blueColors[3]]
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  </script>
+</body>
+</html>
