@@ -219,15 +219,7 @@
       </div>
     </div>
   </div>
-
-  <div class="card full-width">
-    <h2>Monthly Contact Distribution by Type (Heatmap)</h2>
-    <div id="heatmap"></div>
-    <div class="stats">
-      <p>Darker colors indicate higher contact rates</p>
-    </div>
-  </div>
-  
+ 
   <div class="summary">
     <h2>Key Findings</h2>
     <p>The analysis reveals several significant patterns in police-public contacts during 2022:</p>
@@ -314,76 +306,7 @@
         maintainAspectRatio: false
       }
     });
-    <!-- Add this JavaScript before the closing body tag -->
-const heatmapData = [
-{month: 'Jan', police: 40249, resident: 48529, traffic: 14276},
-{month: 'Feb', police: 38665, resident: 47665, traffic: 13998},
-{month: 'Mar', police: 41332, resident: 49332, traffic: 14567},
-{month: 'Apr', police: 39887, resident: 48887, traffic: 14234},
-{month: 'May', police: 42110, resident: 50110, traffic: 14789},
-{month: 'Jun', police: 40998, resident: 48998, traffic: 14432},
-{month: 'Jul', police: 39776, resident: 47776, traffic: 14123},
-{month: 'Aug', police: 41223, resident: 49223, traffic: 14567},
-{month: 'Sep', police: 39665, resident: 47665, traffic: 14098},
-{month: 'Oct', police: 40887, resident: 48887, traffic: 14345},
-{month: 'Nov', police: 38998, resident: 46998, traffic: 13890},
-{month: 'Dec', police: 38198, resident: 47282, traffic: 14290}
-];
-
-const margin = {top: 30, right: 30, bottom: 40, left: 100};
-const width = 800 - margin.left - margin.right;
-const height = 250 - margin.top - margin.bottom;
-
-const svg = d3.select("#heatmap")
-.append("svg")
-.attr("width", width + margin.left + margin.right)
-.attr("height", height + margin.top + margin.bottom)
-.append("g")
-.attr("transform", `translate(${margin.left},${margin.top})`);
-
-const months = heatmapData.map(d => d.month);
-const types = ['police', 'resident', 'traffic'];
-
-const x = d3.scaleBand()
-.range([0, width])
-.domain(months)
-.padding(0.05);
-
-const y = d3.scaleBand()
-.range([height, 0])
-.domain(types)
-.padding(0.05);
-
-const colorScale = d3.scaleSequential()
-.interpolator(d3.interpolateBlues)
-.domain([10000, 55000]);
-
-svg.selectAll()
-.data(heatmapData.flatMap(d => types.map(type => ({
-  month: d.month,
-  type: type,
-  value: d[type]
-}))))
-.join("rect")
-.attr("x", d => x(d.month))
-.attr("y", d => y(d.type))
-.attr("width", x.bandwidth())
-.attr("height", y.bandwidth())
-.attr("class", "heatmap-cell")
-.style("fill", d => colorScale(d.value))
-.append("title")
-.text(d => `${d.month} - ${d.type}: ${d.value.toLocaleString()}`);
-
-svg.append("g")
-.attr("transform", `translate(0,${height})`)
-.call(d3.axisBottom(x))
-.selectAll("text")
-.attr("transform", "rotate(-45)")
-.style("text-anchor", "end");
-
-svg.append("g")
-.call(d3.axisLeft(y));
-
+   
     // Race Chart
     const ctx2 = document.getElementById('raceChart').getContext('2d');
     new Chart(ctx2, {
