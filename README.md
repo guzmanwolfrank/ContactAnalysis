@@ -53,6 +53,8 @@ cd police-contact-dashboard
 - Gender distribution relatively balanced
 - Significant variations in contact rates across racial/ethnic groups
 
+![Dashboard](dashbjpg.jpg)
+
 ## Contributing
 
 1. Fork the repository
