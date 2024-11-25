@@ -1,8 +1,8 @@
-# ContactAnalysis
-Dept of Justice data on law enforcement contact analysis. 
-# Police-Public Contact Analysis Dashboard
+
+# Dept of Justice : Police-Public Contact Analysis Dashboard
 
 Interactive web dashboard visualizing police-public contact data from the 2022 National Crime Victimization Survey.
+HTML Dashboard of Project](https://raw.githack.com/guzmanwolfrank/ContactAnalysis/main/contactanalysis.html)
 
 ## Features
 
@@ -25,7 +25,7 @@ Interactive web dashboard visualizing police-public contact data from the 2022 N
 ```bash
 git clone https://github.com/yourusername/police-contact-dashboard
 cd police-contact-dashboard
-[HTML Dashboard of Project](https://raw.githack.com/guzmanwolfrank/ContactAnalysis/main/contactanalysis.html)
+
 ```
 [HTML Dashboard of Project](https://raw.githack.com/guzmanwolfrank/ContactAnalysis/main/contactanalysis.html)
 ## Data Source
